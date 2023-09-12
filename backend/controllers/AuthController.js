@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 module.exports.CheckAuthOperator = async (req, res, next) => {
 
     const errs = []
-    const token = req.header('authorization').replace("Bearer ", "")
+    const token = (req.header('authorization') || '').replace("Bearer ", "")
     let payload
 
     if (!token) { errs.push("TOKEN_MISSING") }
