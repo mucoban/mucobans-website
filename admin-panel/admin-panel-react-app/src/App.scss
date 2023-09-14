@@ -1,1 +1,27 @@
 @import '~bootstrap/scss/bootstrap.scss';
+
+* { font-family: Inter,Helvetica,sans-serif; }
+a { text-decoration: none }
+
+.main-container {
+  display: flex;
+  min-height: 100vh;
+
+  .side-bar {
+    flex: 0 0 200px;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+
+    .sb-navs {
+      & .sb-navs { padding-left: 10px }
+    }
+
+    .sb-nav {}
+
+    .sb-navlink {
+      color: #444;
+    }
+  }
+
+  .page-content { flex-grow: 1 }
+}
