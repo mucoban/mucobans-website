@@ -1,12 +1,32 @@
 import axios from "axios"
 import {globals} from "../globals";
 
+const setInterceptors = (token) => {
+    axios.interceptors.request.clear()
+    axios.interceptors.request.use((config) => {
+        config.headers.Authorization = `Bearer ${token}`
+        return config
+    })
+
+    axios.interceptors.response.use(
+        (response) => {
+            if (response.data.error) { return Promise.reject('error') }
+            return response;
+        },
+        (error) => {
+            return error
+        }
+    )
+}
+
 const AuthService = {}
 
 AuthService.initialLogin = () => {
     const token = localStorage.getItem('token')
     if (token) {
-        axios.get(`${globals.api}detail`, { headers: { authorization: `Bearer ${token}` } })
+        setInterceptors(token)
+
+        axios.get(`${globals.api}detail`)
             .then(response => {
                 if (response.data.status) sessionStorage.setItem('token', `${token}`)
                 else sessionStorage.removeItem('token')
@@ -25,6 +45,7 @@ AuthService.login = (data) => {
                 if (response.data.success) {
                     localStorage.setItem('token', `${response.data.token}`)
                     sessionStorage.setItem('token', `${response.data.token}`)
+                    setInterceptors(response.data.token)
                 }
                 resolve(response.data)
             })

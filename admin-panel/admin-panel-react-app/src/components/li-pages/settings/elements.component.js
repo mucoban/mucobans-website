@@ -1,28 +1,48 @@
-const Elements = () => {
+import {Component} from "react";
+import axios from "axios";
+import {globals} from "../../../globals";
 
-    return (<div>
-        <p>elements</p>
+class Elements extends Component {
 
-        <table className="table">
-            <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Title</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-            </tr>
+    constructor(counter) {
+        super(counter);
+        this.state = {
+            elements: []
+        }
+    }
 
-            </tbody>
-        </table>
-    </div>)
+    componentDidMount() {
+        this.getElements()
+    }
+
+    getElements = () => {
+        axios.get(`${globals.api}elements`)
+            .then(response => {
+                this.setState({ elements: response.data.data })
+            })
+    }
+
+    render() {
+        return (<div>
+            <p>elements</p>
+
+            <table className="table">
+                <thead>
+                <tr>
+                    <th scope="col">Element Id</th>
+                    <th scope="col">Value</th>
+                </tr>
+                </thead>
+                <tbody>
+                {this.state.elements.map(element => (<tr key={element._id}>
+                    <th>{element._id}</th>
+                    <td>{element.elementData[0].value}</td>
+                </tr>))}
+                </tbody>
+            </table>
+        </div>)
+    }
+
 }
 
 export default Elements
