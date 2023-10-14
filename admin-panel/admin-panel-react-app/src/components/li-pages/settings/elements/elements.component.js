@@ -1,6 +1,7 @@
 import {Component} from "react";
 import axios from "axios";
-import {globals} from "../../../globals";
+import {globals} from "../../../../globals";
+import {Link} from "react-router-dom";
 
 class Elements extends Component {
 
@@ -31,12 +32,14 @@ class Elements extends Component {
                 <tr>
                     <th scope="col">Element Id</th>
                     <th scope="col">Value</th>
+                    <th scope="col">Action</th>
                 </tr>
                 </thead>
                 <tbody>
                 {this.state.elements.map(element => (<tr key={element._id}>
                     <th>{element._id}</th>
                     <td>{element.elementData[0].value}</td>
+                    <td><Link to={element._id}>Edit</Link></td>
                 </tr>))}
                 </tbody>
             </table>

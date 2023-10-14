@@ -10,10 +10,14 @@ const setInterceptors = (token) => {
 
     axios.interceptors.response.use(
         (response) => {
-            if (response.data.error) { return Promise.reject('error') }
+            if (response.data && response.data.error) { return Promise.reject('error') }
             return response;
         },
         (error) => {
+            if (error.response && error.response.status === 401) {
+                localStorage.removeItem('token')
+                sessionStorage.removeItem('token')
+            }
             return error
         }
     )
@@ -28,11 +32,8 @@ AuthService.initialLogin = () => {
 
         axios.get(`${globals.api}detail`)
             .then(response => {
-                if (response.data.status) sessionStorage.setItem('token', `${token}`)
+                if (response.data && response.data.status) sessionStorage.setItem('token', `${token}`)
                 else sessionStorage.removeItem('token')
-            })
-            .catch(error => {
-                if (error.response.data.message) sessionStorage.removeItem('token')
             })
     }
     else sessionStorage.removeItem('token')

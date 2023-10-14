@@ -20,5 +20,25 @@ module.exports.list = async (req, res, next) => {
             message: error.message || 'Internal Error'
         })
     }
+}
 
+module.exports.getOne = async (req, res, next) => {
+    try {
+        const element = await Element.findById(req.params.id)
+            .populate('elementData')
+            .catch(error => {
+                console.log(error)
+            })
+
+        return res.json({
+            data: element
+        })
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            error: true,
+            message: error.message || 'Internal Error'
+        })
+    }
 }
