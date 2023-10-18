@@ -7,7 +7,7 @@ const elementSchema = new mongoose.Schema({
         unique: true,
     },
     multiLanguage: {
-        type: String,
+        type: Boolean,
         required: [true],
     },
     active: {
@@ -15,6 +15,10 @@ const elementSchema = new mongoose.Schema({
         required: [true],
     },
     createdAt: {
+        type: Date,
+        default: new Date(),
+    },
+    updatedAt: {
         type: Date,
         default: new Date(),
     },

@@ -8,5 +8,6 @@ module.exports = (app) => {
     app.get('/admin/detail', CheckAuthOperator, OperatorDetail)
     app.get('/admin/elements', CheckAuthOperator, ElementController.list)
     app.get('/admin/elements/:id', CheckAuthOperator, ElementController.getOne)
+    app.put('/admin/elements/:id', CheckAuthOperator, ElementController.save)
     app.get('/admin/languages', CheckAuthOperator, LanguageController.list)
 }
