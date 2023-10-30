@@ -11,10 +11,12 @@ class ElementEdit extends Component {
     constructor(counter) {
         super(counter);
         this.state = {
+            editMode: Boolean(this.props.params.id),
             languages: [],
             element: {
                 active: false,
                 multiLanguage: false,
+                elementData: []
             }
         }
         this.setElementValue = this.setElementValue.bind(this)
@@ -45,7 +47,15 @@ class ElementEdit extends Component {
         axios.get(`${globals.api}languages`)
             .then(response => {
                 this.setState({ languages: response.data.data })
-                this.getElement()
+                if (this.state.editMode) this.getElement()
+                else {
+                    const elementData = []
+                    this.state.languages.forEach(language => elementData.push({
+                        languageAbb: language.abb,
+                        value: '',
+                    }))
+                    this.setState({ element: { ...this.state.element, elementData: elementData } })
+                }
             })
     }
 
@@ -63,16 +73,23 @@ class ElementEdit extends Component {
         const languages = this.state.languages.map(language => ({...language, elementValue: ''}))
         this.setState({ languages: languages })
 
-        axios.put(`${globals.api}elements/${this.props.params.id}`, element)
-            .then(response => {
-                alert(response.data.message)
-                this.handleElement(response.data.data)
-            })
+        if (!this.state.editMode)
+            axios.post(`${globals.api}elements`, element)
+                .then(response => {
+                    alert(response.data.message)
+                    this.handleElement(response.data.data)
+                })
+        else
+            axios.put(`${globals.api}elements/${this.props.params.id}`, element)
+                .then(response => {
+                    alert(response.data.message)
+                    this.handleElement(response.data.data)
+                })
     }
 
     render() {
-        return (<div>
-            <h4>element {this.state.element.id}</h4>
+        return (<div className="container">
+            <h4>{this.state.editMode ? `element ${this.state.element.id}` : `Create element`}</h4>
 
             <div className="col-3">
                 <form onSubmit={this.handleSubmit}>

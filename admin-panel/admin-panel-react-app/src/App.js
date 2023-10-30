@@ -18,6 +18,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<AuthGuard component={<LiPages/>}/>}>
                         <Route path="settings/elements" element={<Elements />} />
+                        <Route path="settings/elements/create" element={<ElementEdit />} />
                         <Route path="settings/elements/:id" element={<ElementEdit />} />
                     </Route>
                     <Route path="/login" element={<LoginComponent/>}></Route>

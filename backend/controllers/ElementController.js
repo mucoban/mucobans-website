@@ -43,6 +43,45 @@ module.exports.getOne = async (req, res, next) => {
     }
 }
 
+module.exports.create = async (req, res, next) => {
+    try {
+
+        await Element.create({...req.body, typeId: 2})
+            .then((createdElement) => {
+                const elementData= req.body.elementData.map((ed, index) => {
+                    ed.elementId = createdElement._id
+                    ed.main = index === 0
+                    return ed
+                })
+                ElementData.create(elementData)
+                    .then( ed => {
+                        console.log('created', ed)
+                    })
+                    .catch(error => { console.log(error) })
+
+
+                Element.findById(createdElement._id)
+                    .populate('elementData')
+                    .then(element => {
+                        return res.json({
+                            message: 'successfully created',
+                            data: element
+                        })
+                    })
+                    .catch(error => { console.log(error) })
+            })
+            .catch(error => { console.log(error) })
+
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            error: true,
+            message: error.message || 'Internal Error'
+        })
+    }
+}
+
 module.exports.save = async (req, res, next) => {
     try {
 
@@ -70,6 +109,32 @@ module.exports.save = async (req, res, next) => {
             })
             .catch(error => { console.log(error) })
 
+    }
+    catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            error: true,
+            message: error.message || 'Internal Error'
+        })
+    }
+}
+
+module.exports.delete = async (req, res, next) => {
+    try {
+        await Element.deleteOne({ _id: req.params.id })
+            .then(result => {
+
+                ElementData.deleteMany({ elementId: req.params.id })
+                    .then(resultED => {
+                        return res.json({
+                            message: 'successfully deleted',
+                            data: result
+                        })
+                    })
+                    .catch(() => console.log)
+
+            })
+            .catch(() => console.log)
     }
     catch (error) {
         console.log(error)

@@ -23,10 +23,22 @@ class Elements extends Component {
             })
     }
 
-    render() {
-        return (<div>
-            <p>elements</p>
+    deleteElement = elementId => {
+        if (window.confirm(`element ${elementId} will be deleted`)) {
+            axios.delete(`${globals.api}elements/${elementId}`)
+                .then(response => {
+                    alert(response.data.message)
+                    this.getElements()
+                })
+        }
+    }
 
+    render() {
+        return (<div className="container">
+            <p>elements</p>
+            <div className="text-end">
+                <Link to="./create">Create</Link>
+            </div>
             <table className="table">
                 <thead>
                 <tr>
@@ -39,7 +51,8 @@ class Elements extends Component {
                 {this.state.elements.map(element => (<tr key={element._id}>
                     <th>{element._id}</th>
                     <td>{element.elementData[0].value}</td>
-                    <td><Link to={element._id}>Edit</Link></td>
+                    <td><Link className="btn btn-warning" to={element._id}>Edit</Link></td>
+                    <td><button className="btn btn-danger" onClick={() => this.deleteElement(element._id)}>Delete</button></td>
                 </tr>))}
                 </tbody>
             </table>
