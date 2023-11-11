@@ -21,6 +21,7 @@ const LiPages = () => {
                         <div className="sb-nav">
                             <a href="" className="sb-navlink">Settings</a>
                             <div className="sb-navs">
+                                <div className="sb-nav"> <Link className="sb-navlink" to="/settings/languages">Languages</Link> </div>
                                 <div className="sb-nav"> <Link className="sb-navlink" to="/settings/elements">Elements</Link> </div>
                                 <div className="sb-nav"> <Link className="sb-navlink" to="/">Boxes</Link> </div>
                             </div>
