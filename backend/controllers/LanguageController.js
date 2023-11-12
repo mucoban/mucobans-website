@@ -1,4 +1,6 @@
 const Language = require("../models/LanguagesModel");
+const Element = require("../models/ElementModel");
+const ElementData = require("../models/ElementDataModel");
 
 module.exports.list = async (req, res, next) => {
     try {
@@ -43,6 +45,18 @@ module.exports.create = async (req, res) => {
             .then(createdLanguage => {
                 Language.findById(createdLanguage._id)
                     .then(language => {
+
+                        Element.find().then(elements => {
+                            elements.forEach(element => {
+                                ElementData.create({
+                                    elementId: element._id,
+                                    languageAbb: createdLanguage.abb,
+                                    main: false,
+                                    value: ''
+                                }).then().catch(error => { console.log(error) })
+                            })
+                        })
+
                         return res.json({
                             message: 'successfully created',
                             data: language
@@ -64,9 +78,18 @@ module.exports.create = async (req, res) => {
 module.exports.save = async (req, res) => {
     try {
         await Language.findOneAndUpdate({ _id: req.params.id }, req.body)
-            .then(() => {
+            .then(languagePrevious => {
                 Language.findById(req.params.id)
                     .then(language => {
+
+                        Element.find().then(elements => {
+                            elements.forEach(element => {
+                                ElementData.findOneAndUpdate({ elementId: element._id, languageAbb: languagePrevious.abb }, {
+                                    languageAbb: language.abb,
+                                }).then().catch(error => { console.log(error) })
+                            })
+                        })
+
                         return res.json({
                             message: 'successfully saved',
                             data: language
@@ -87,8 +110,15 @@ module.exports.save = async (req, res) => {
 
 module.exports.delete = async (req, res) => {
     try {
-        await Language.deleteOne({ _id: req.params.id })
+        await Language.findOneAndDelete({ _id: req.params.id })
             .then(result => {
+                Element.find().then(elements => {
+                    elements.forEach(element => {
+                        ElementData.findOneAndDelete({ elementId: element._id, languageAbb: result.abb })
+                            .then().catch(error => { console.log(error) })
+                    })
+                })
+
                 return res.json({
                     message: 'successfully deleted',
                     data: result

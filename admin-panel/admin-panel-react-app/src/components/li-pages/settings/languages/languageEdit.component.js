@@ -2,6 +2,7 @@ import {Component} from "react";
 import axios from "axios";
 import {globals} from "../../../../globals";
 import {useParams} from "react-router-dom"
+import {Form} from "react-bootstrap";
 
 const withParams = (Component) => props => <Component {...props} params={useParams()} />
 
@@ -14,6 +15,7 @@ class LanguageEdit extends Component {
             language: {
                 title: '',
                 abb: '',
+                active: false,
             }
         }
 
@@ -67,6 +69,14 @@ class LanguageEdit extends Component {
             <div className="col-3">
                 <form onSubmit={this.handleSubmit}>
 
+                    <div className="mb-3">
+                        <Form.Check
+                            type="checkbox"
+                            label="active"
+                            checked={this.state.language.active}
+                            onChange={(e) => this.setValue('active', e.target.checked)}
+                        />
+                    </div>
                     <div className="form-group">
                         <label>Title</label>
                         <input className="form-control"
